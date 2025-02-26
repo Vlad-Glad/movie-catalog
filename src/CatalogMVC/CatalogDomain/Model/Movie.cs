@@ -7,19 +7,23 @@ namespace CatalogDomain.Model;
 public partial class Movie : Entity
 {
     [Required(ErrorMessage = "Title field can't be empty!")]
+    [StringLength(100, MinimumLength = 3, ErrorMessage = "Title must be between 3 and 100 characters.")]
     [Display(Name = "Movie title")]
     public string Title { get; set; } = null!;
 
+    [Required(ErrorMessage = "Year field can't be empty!")]
     public int Year { get; set; }
 
+    [DataType(DataType.MultilineText)]
     public string? Description { get; set; }
 
+    [Required(ErrorMessage = "Title field can't be empty!")]
+    [Range(1, 1000000, ErrorMessage = "Length can't be less than 1 minute ")]
     [Display(Name = "Movie length in min")]
-
     public int MovieLength { get; set; }
 
+    [Url(ErrorMessage = "Invalid URL format.")]
     [Display(Name = "URL to poster in storage")]
-
     public string? Poster { get; set; }
 
     public virtual ICollection<DirectedBy> DirectedBies { get; set; } = new List<DirectedBy>();

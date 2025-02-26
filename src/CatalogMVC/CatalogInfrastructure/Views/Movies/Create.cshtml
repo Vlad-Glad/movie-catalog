@@ -19,7 +19,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Year" class="control-label"></label>
-                <input asp-for="Year" class="form-control" />
+                <input asp-for="Year" class="form-control" min="1900" max="@DateTime.Now.Year" />
                 <span asp-validation-for="Year" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -29,7 +29,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="MovieLength" class="control-label"></label>
-                <input asp-for="MovieLength" class="form-control" />
+                <input asp-for="MovieLength" class="form-control" min="1" max="1000000" />
                 <span asp-validation-for="MovieLength" class="text-danger"></span>
             </div>
             <div class="form-group">
