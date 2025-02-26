@@ -1,17 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace CatalogDomain.Model;
 
 public partial class Movie : Entity
 {
+    [Required(ErrorMessage = "Title field can't be empty!")]
+    [Display(Name = "Movie title")]
     public string Title { get; set; } = null!;
 
     public int Year { get; set; }
 
     public string? Description { get; set; }
 
+    [Display(Name = "Movie length in min")]
+
     public int MovieLength { get; set; }
+
+    [Display(Name = "URL to poster in storage")]
 
     public string? Poster { get; set; }
 
