@@ -19,13 +19,11 @@ namespace CatalogInfrastructure.Controllers
             _context = context;
         }
 
-        // GET: Genres
         public async Task<IActionResult> Index()
         {
             return View(await _context.Genres.ToListAsync());
         }
 
-        // GET: Genres/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)

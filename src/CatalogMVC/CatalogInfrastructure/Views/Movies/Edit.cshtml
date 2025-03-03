@@ -29,7 +29,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="MovieLength" class="control-label"></label>
-                <input asp-for="MovieLength" class="form-control" />
+                <input asp-for="MovieLength" class="form-control" min="1" max="1000000" />
                 <span asp-validation-for="MovieLength" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -41,6 +41,27 @@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
+
+            @* <div class="form-group"> *@
+            @*     <label>Genres</label> *@
+            @*     <select name="selectedGenres" class="form-control" multiple> *@
+            @*         @if (ViewData["Genres"] != null) *@
+            @*         { *@
+            @*             @foreach (var genre in (List<Genres>)ViewData["Genres"]) *@
+            @*             { *@
+            @*                 <option value="@genre.Id" *@
+            @*                         selected="@( ((List<int>)ViewData["SelectedGenres"]).Contains(genre.Id) )"> *@
+            @*                     @genre.Name *@
+            @*                 </option> *@
+            @*             } *@
+            @*         } *@
+            @*         else *@
+            @*         { *@
+            @*             <option disabled>No genres available</option> *@
+            @*         } *@
+            @*     </select> *@
+            @* </div> *@
+
         </form>
     </div>
 </div>

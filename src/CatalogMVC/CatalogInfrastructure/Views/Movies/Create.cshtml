@@ -40,6 +40,18 @@
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
+
+            @* <div class="form-group"> *@
+            @*     <label>Genres</label> *@
+            @*     <select name="selectedGenres" class="form-control" multiple> *@
+            @*         @foreach (var genre in ViewData["Genres"] as SelectList) *@
+            @*         { *@
+            @*             <option value="@genre.Value">@genre.Text</option> *@
+            @*         } *@
+            @*     </select> *@
+            @* </div> *@
+
+            <button type="submit" class="btn btn-primary">Save</button>
         </form>
     </div>
 </div>

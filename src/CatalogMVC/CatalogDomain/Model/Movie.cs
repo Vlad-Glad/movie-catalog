@@ -7,7 +7,7 @@ namespace CatalogDomain.Model;
 public partial class Movie : Entity
 {
     [Required(ErrorMessage = "Title field can't be empty!")]
-    [StringLength(100, MinimumLength = 3, ErrorMessage = "Title must be between 3 and 100 characters.")]
+    [StringLength(100, MinimumLength = 3, ErrorMessage = "Minimum 3 symbols")]
     [Display(Name = "Movie title")]
     public string Title { get; set; } = null!;
 
