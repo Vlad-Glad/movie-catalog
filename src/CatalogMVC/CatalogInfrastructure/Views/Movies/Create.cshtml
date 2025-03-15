@@ -40,17 +40,15 @@
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
-
-            @* <div class="form-group"> *@
-            @*     <label>Genres</label> *@
-            @*     <select name="selectedGenres" class="form-control" multiple> *@
-            @*         @foreach (var genre in ViewData["Genres"] as SelectList) *@
-            @*         { *@
-            @*             <option value="@genre.Value">@genre.Text</option> *@
-            @*         } *@
-            @*     </select> *@
-            @* </div> *@
-
+            <div class="from-group">
+                <label>Genres</label>
+                <select id="genreSelect" name="selectedGenres" multiple="multiple" class="from-control">
+                    @foreach (var genre in (IEnumerable<SelectListItem>)ViewData["Genres"])
+                    {
+                        <option value="@genre.Value">@genre.Text</option>
+                    }
+                </select>
+            </div>
             <button type="submit" class="btn btn-primary">Save</button>
         </form>
     </div>
@@ -63,3 +61,17 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<!-- Підключаємо Select2 -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#genreSelect').select2({
+            placeholder: "Оберіть жанри",
+            allowClear: true
+        });
+    });
+</script>

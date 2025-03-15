@@ -26,28 +26,31 @@ namespace CatalogInfrastructure.Controllers
 
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var movie = await _context.Movies
                 .Include(m => m.MovieGenres)
                 .ThenInclude(mg => mg.Genre)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (movie == null)
-            {
-                return NotFound();
-            }
+
+            if (movie == null) return NotFound();
 
             return View(movie);
         }
 
         public IActionResult Create()
         {
-            ViewData["Genres"] = new SelectList(_context.Genres, "Id", "Name");
+            var genres = _context.Genres.ToList();
+
+            ViewData["Genres"] = genres.Select(g => new SelectListItem
+            {
+                Value = g.Id.ToString(),
+                Text = g.GenreName
+            }).ToList();
+
             return View();
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -69,6 +72,7 @@ namespace CatalogInfrastructure.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["Genres"] = new SelectList(_context.Genres, "Id", "Name", selectedGenres);
             return View(movie);
         }
