@@ -1,7 +1,7 @@
 ﻿@model CatalogDomain.Model.Movie
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewBag.Title = "Edit Movie";
 }
 
 <h1>Edit</h1>
@@ -12,56 +12,66 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Year" class="control-label"></label>
                 <input asp-for="Year" class="form-control" min="1900" max="@DateTime.Now.Year" />
                 <span asp-validation-for="Year" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="MovieLength" class="control-label"></label>
                 <input asp-for="MovieLength" class="form-control" min="1" max="1000000" />
                 <span asp-validation-for="MovieLength" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Poster" class="control-label"></label>
                 <input asp-for="Poster" class="form-control" />
                 <span asp-validation-for="Poster" class="text-danger"></span>
             </div>
+
             <input type="hidden" asp-for="Id" />
+
+            <!-- MultiSelect Genres -->
+            <div class="form-group">
+                <label>Genres</label>
+                <select name="selectedGenres" class="form-control chosen-select" multiple>
+                    @if (ViewData["Genres"] != null && ViewBag.SelectedGenres != null)
+                    {
+                        foreach (var genre in (IEnumerable<SelectListItem>)ViewData["Genres"])
+                        {
+                            <option value="@genre.Value" selected="@(ViewBag.SelectedGenres.Contains(int.Parse(genre.Value)) ? "selected" : null)">
+                                @genre.Text
+                            </option>
+                            @* bool isSelected = ViewBag.SelectedGenres is List<int> selectedList && selectedList.Contains(int.Parse(genre.Value)); *@
+                            @* <option value="@genre.Value" selected="@(isSelected ? "selected" : null)"> *@
+                            @*     @genre.Text *@
+                            @* </option> *@
+                        }
+                    }
+                    else
+                    {
+                        <option disabled>No genres available</option>
+                    }
+                </select>
+            </div>
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
-
-            @* <div class="form-group"> *@
-            @*     <label>Genres</label> *@
-            @*     <select name="selectedGenres" class="form-control" multiple> *@
-            @*         @if (ViewData["Genres"] != null) *@
-            @*         { *@
-            @*             @foreach (var genre in (List<Genres>)ViewData["Genres"]) *@
-            @*             { *@
-            @*                 <option value="@genre.Id" *@
-            @*                         selected="@( ((List<int>)ViewData["SelectedGenres"]).Contains(genre.Id) )"> *@
-            @*                     @genre.Name *@
-            @*                 </option> *@
-            @*             } *@
-            @*         } *@
-            @*         else *@
-            @*         { *@
-            @*             <option disabled>No genres available</option> *@
-            @*         } *@
-            @*     </select> *@
-            @* </div> *@
-
         </form>
     </div>
 </div>
@@ -70,6 +80,24 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+<!-- Corrected Scripts Section -->
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css" rel="stylesheet" />
+
+    <script>
+        $(document).ready(function () {
+            $(".chosen-select").chosen({
+                no_results_text: "No genres found!",
+                width: "100%",
+                allow_single_deselect: true,
+                placeholder_text_multiple: "---Choose genres---"
+            });
+        });
+    </script>
 }

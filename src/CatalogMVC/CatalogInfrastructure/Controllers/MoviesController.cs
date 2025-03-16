@@ -26,6 +26,8 @@ namespace CatalogInfrastructure.Controllers
 
         public async Task<IActionResult> Details(int? id)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+           
             if (id == null) return NotFound();
 
             var movie = await _context.Movies
@@ -40,13 +42,7 @@ namespace CatalogInfrastructure.Controllers
 
         public IActionResult Create()
         {
-            var genres = _context.Genres.ToList();
-
-            ViewData["Genres"] = genres.Select(g => new SelectListItem
-            {
-                Value = g.Id.ToString(),
-                Text = g.GenreName
-            }).ToList();
+            ViewBag.Genres = new MultiSelectList(_context.Genres.ToList(), "Id", "GenreName");
 
             return View();
         }
@@ -58,22 +54,32 @@ namespace CatalogInfrastructure.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(movie);
+                _context.Movies.Add(movie);
                 await _context.SaveChangesAsync();
 
-                if (selectedGenres != null)
+                if(selectedGenres != null)
                 {
                     foreach (var genreId in selectedGenres)
                     {
-                        _context.MovieGenres.Add(new MovieGenre { MovieId = movie.Id, GenreId = genreId });
+                        if (!_context.MovieGenres.Any(mg => mg.MovieId == movie.Id && mg.GenreId == genreId))
+                        {
+                            _context.MovieGenres.Add(new MovieGenre { MovieId = movie.Id, GenreId = genreId });
+                        }
+
+                        //_context.MovieGenres.Add(new MovieGenre
+                        //{
+                        //    MovieId = movie.Id,
+                        //    GenreId = genreId
+                        //});
                     }
+
                     await _context.SaveChangesAsync();
                 }
 
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["Genres"] = new SelectList(_context.Genres, "Id", "Name", selectedGenres);
+            ViewBag.Genres = new MultiSelectList(await _context.Genres.ToListAsync(), "Id", "GenreName", selectedGenres);
             return View(movie);
         }
 
@@ -81,21 +87,17 @@ namespace CatalogInfrastructure.Controllers
         {
             if (id == null) return NotFound();
 
-            // Load movie with its genres
             var movie = await _context.Movies
                 .Include(m => m.MovieGenres)
+                .ThenInclude(mg => mg.Genre)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (movie == null) return NotFound();
 
-            // Get selected genres for this movie
             var selectedGenres = movie.MovieGenres.Select(mg => mg.GenreId).ToList();
 
-            // Pass all genres to the view and preselect the existing ones
-            ViewData["Genres"] = new SelectList(await _context.Genres.ToListAsync(), "Id", "Name");
-
-            ViewBag.SelectedGenres = selectedGenres; // Send selected genres to the view
-
+            ViewData["Genres"] = new SelectList(await _context.Genres.ToListAsync(), "Id", "GenreName");
+            ViewBag.SelectedGenres = selectedGenres;
             return View(movie);
         }
 
@@ -104,57 +106,66 @@ namespace CatalogInfrastructure.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Movie movie, List<int> selectedGenres)
         {
-            if (id != movie.Id)
+            if (id != movie.Id) return NotFound();
+
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                ViewData["Genres"] = new SelectList(await _context.Genres.ToListAsync(), "Id", "GenreName");
+                ViewBag.SelectedGenres = selectedGenres;
+                return View(movie);
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
+                var existingMovie = await _context.Movies
+                    .Include(m => m.MovieGenres)
+                    .FirstOrDefaultAsync(m => m.Id == id);
+
+                if (existingMovie == null) return NotFound();
+
+                existingMovie.Title = movie.Title;
+                existingMovie.Year = movie.Year;
+                existingMovie.Description = movie.Description;
+                existingMovie.MovieLength = movie.MovieLength;
+                existingMovie.Poster = movie.Poster;
+
+                var existingMovieGenres = await _context.MovieGenres
+                    .Where(mg => mg.MovieId == id)
+                    .ToListAsync();
+
+                var existingGenreIds = existingMovieGenres.Select(mg => mg.GenreId).ToList();
+
+                var genresToRemove = existingMovieGenres
+                    .Where(mg => !selectedGenres.Contains(mg.GenreId))
+                    .ToList();
+
+                if (genresToRemove.Any())
                 {
-                    // Retrieve the existing movie with its genres
-                    var existingMovie = await _context.Movies
-                        .Include(m => m.MovieGenres)
-                        .FirstOrDefaultAsync(m => m.Id == id);
-
-                    if (existingMovie == null)
-                    {
-                        return NotFound();
-                    }
-
-                    existingMovie.Title = movie.Title;
-                    existingMovie.Year = movie.Year;
-                    existingMovie.Description = movie.Description;
-                    existingMovie.MovieLength = movie.MovieLength;
-                    existingMovie.Poster = movie.Poster;
-
-                    _context.MovieGenres.RemoveRange(existingMovie.MovieGenres);
-                    await _context.SaveChangesAsync();
-
-                    if (selectedGenres != null)
-                    {
-                        foreach (var genreId in selectedGenres)
-                        {
-                            _context.MovieGenres.Add(new MovieGenre { MovieId = existingMovie.Id, GenreId = genreId });
-                        }
-                        await _context.SaveChangesAsync();
-                    }
-
-                    return RedirectToAction(nameof(Index));
+                    _context.MovieGenres.RemoveRange(genresToRemove);
                 }
-                catch (DbUpdateConcurrencyException)
+
+                var newGenresToAdd = selectedGenres
+                    .Where(genreId => !existingGenreIds.Contains(genreId))
+                    .Select(genreId => new MovieGenre { MovieId = existingMovie.Id, GenreId = genreId })
+                    .ToList();
+
+                if (newGenresToAdd.Any())
                 {
-                    if (!_context.Movies.Any(m => m.Id == id)) return NotFound();
-                    throw;
+                    await _context.MovieGenres.AddRangeAsync(newGenresToAdd);
                 }
+
+                if (genresToRemove.Any() || newGenresToAdd.Any())
+                {
+                    _context.SaveChanges();
+                }
+
+                return RedirectToAction(nameof(Index));
             }
-
-            // Reload genres in case of an error
-            ViewData["Genres"] = new SelectList(await _context.Genres.ToListAsync(), "Id", "Name");
-            ViewBag.SelectedGenres = selectedGenres;
-
-            return View(movie);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_context.Movies.Any(m => m.Id == id)) return NotFound();
+                throw;
+            }
         }
 
 

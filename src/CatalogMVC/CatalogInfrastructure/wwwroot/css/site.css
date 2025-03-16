@@ -20,3 +20,63 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* Make the Chosen dropdown look like other input fields */
+.chosen-container {
+    width: 100% !important;
+}
+
+    /* Customizing the dropdown box */
+    .chosen-container .chosen-single {
+        background: linear-gradient(to right, #54a0ff, #5f27cd); /* Gradient background */
+        border: 1px solid #ced4da; /* Border color */
+        color: white; /* Text color */
+        border-radius: 8px; /* Rounded corners */
+        height: 40px; /* Match height with input fields */
+        padding: 8px 12px;
+        font-size: 16px;
+    }
+
+        /* Custom placeholder text */
+        .chosen-container .chosen-single span {
+            color: white;
+        }
+
+/* When dropdown is active */
+.chosen-container-active .chosen-single {
+    background: linear-gradient(to right, #5f27cd, #54a0ff); /* Reverse gradient */
+    border-color: #5f27cd;
+}
+
+/* Dropdown list */
+.chosen-container .chosen-drop {
+    background: #ffffff;
+    border: 1px solid #5f27cd;
+    border-radius: 6px;
+}
+
+/* Styling the selected options (multi-select mode) */
+.chosen-container-multi .chosen-choices {
+    background: linear-gradient(to right, #54a0ff, #5f27cd);
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    min-height: 40px; /* Adjust height */
+    padding: 6px;
+    color: white;
+}
+
+    /* Tags inside multi-select */
+    .chosen-container-multi .chosen-choices li.search-choice {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 6px;
+    }
+
+/* Hover effect */
+.chosen-container .chosen-results li.highlighted {
+    background: #5f27cd;
+    color: white;
+    font-weight: bold;
+}
