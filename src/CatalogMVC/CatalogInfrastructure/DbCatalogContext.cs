@@ -60,7 +60,7 @@ public partial class DbCatalogContext : DbContext
 
             entity.ToTable("DirectedBy");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.DirectorId).HasColumnName("DirectorID");
             entity.Property(e => e.MovieId).HasColumnName("MovieID");
 
@@ -102,7 +102,7 @@ public partial class DbCatalogContext : DbContext
         {
             entity.ToTable("MovieCast");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.ActorId).HasColumnName("ActorID");
             entity.Property(e => e.MovieId).HasColumnName("MovieID");
 
@@ -123,7 +123,7 @@ public partial class DbCatalogContext : DbContext
 
             entity.ToTable("MovieGenre");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.GenreId).HasColumnName("GenreID");
             entity.Property(e => e.MovieId).HasColumnName("MovieID");
 
@@ -157,7 +157,7 @@ public partial class DbCatalogContext : DbContext
 
             entity.ToTable("ToWatchList");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.AddedDate).HasColumnType("datetime");
             entity.Property(e => e.MovieId).HasColumnName("MovieID");
             entity.Property(e => e.UserId).HasColumnName("UserID");
@@ -190,7 +190,7 @@ public partial class DbCatalogContext : DbContext
         {
             entity.ToTable("UserRating");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.MovieId).HasColumnName("MovieID");
             entity.Property(e => e.UserId).HasColumnName("UserID");
 
@@ -209,7 +209,7 @@ public partial class DbCatalogContext : DbContext
         {
             entity.ToTable("WatchedList");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.MovieId).HasColumnName("MovieID");
             entity.Property(e => e.UserId).HasColumnName("UserID");
             entity.Property(e => e.WatchedDate).HasColumnType("datetime");

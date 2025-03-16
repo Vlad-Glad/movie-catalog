@@ -65,12 +65,6 @@ namespace CatalogInfrastructure.Controllers
                         {
                             _context.MovieGenres.Add(new MovieGenre { MovieId = movie.Id, GenreId = genreId });
                         }
-
-                        //_context.MovieGenres.Add(new MovieGenre
-                        //{
-                        //    MovieId = movie.Id,
-                        //    GenreId = genreId
-                        //});
                     }
 
                     await _context.SaveChangesAsync();
@@ -156,7 +150,7 @@ namespace CatalogInfrastructure.Controllers
 
                 if (genresToRemove.Any() || newGenresToAdd.Any())
                 {
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -168,21 +162,16 @@ namespace CatalogInfrastructure.Controllers
             }
         }
 
-
-        // GET: Movies/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var movie = await _context.Movies
+                .Include(m => m.MovieGenres)
+                .ThenInclude(mg => mg.Genre)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (movie == null)
-            {
-                return NotFound();
-            }
+
+            if (movie == null) return NotFound();
 
             return View(movie);
         }
@@ -192,9 +181,13 @@ namespace CatalogInfrastructure.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var movie = await _context.Movies.FindAsync(id);
+            var movie = _context.Movies
+                .Include(m => m.MovieGenres)
+                .FirstOrDefault(m => m.Id == id);
+
             if (movie != null)
             {
+                _context.MovieGenres.RemoveRange(movie.MovieGenres);
                 _context.Movies.Remove(movie);
             }
 
