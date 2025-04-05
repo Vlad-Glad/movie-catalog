@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CatalogDomain.Model;
 
@@ -10,12 +12,25 @@ public partial class User : Entity
     [EmailAddress(ErrorMessage ="Invalid email format")]
     public string Email { get; set; } = null!;
 
-    [Required(ErrorMessage ="Password is reqired")]
     public byte[] PasswordHash { get; set; } = null!;
 
-    [Required(ErrorMessage = "Role is required.")]
-    [RegularExpression("^(Admin|User)$", ErrorMessage = "Invalid role. Allowed values: Admin, User, Moderator.")]
+    [NotMapped]
+    [DataType(DataType.Password)]
+    [Required(ErrorMessage = "Password is required")]
+    public string Password { get; set; }
+
+
+    [NotMapped]
+    [DataType(DataType.Password)]
+    [Compare("Password", ErrorMessage = "Passwords do not match")]
+    public string ConfirmPassword { get; set; }
+
     public string Role { get; set; } = null!;
+
+    [NotMapped]
+    public const string Admin = "Admin";
+    [NotMapped]
+    public const string OrdinaryUser = "User";
 
     public virtual ICollection<ToWatchList> ToWatchLists { get; set; } = new List<ToWatchList>();
 

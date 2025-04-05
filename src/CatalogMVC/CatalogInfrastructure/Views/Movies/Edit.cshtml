@@ -45,7 +45,7 @@
 
             <input type="hidden" asp-for="Id" />
 
-            <!-- MultiSelect Genres -->
+            <!-- Genres -->
             <div class="form-group">
                 <label>Genres</label>
                 <select name="selectedGenres" class="form-control chosen-select" multiple>
@@ -56,15 +56,49 @@
                             <option value="@genre.Value" selected="@(ViewBag.SelectedGenres.Contains(int.Parse(genre.Value)) ? "selected" : null)">
                                 @genre.Text
                             </option>
-                            @* bool isSelected = ViewBag.SelectedGenres is List<int> selectedList && selectedList.Contains(int.Parse(genre.Value)); *@
-                            @* <option value="@genre.Value" selected="@(isSelected ? "selected" : null)"> *@
-                            @*     @genre.Text *@
-                            @* </option> *@
                         }
                     }
                     else
                     {
                         <option disabled>No genres available</option>
+                    }
+                </select>
+            </div>
+            <!-- Actors -->
+            <div class="form-group">
+                <label>Actors</label>
+                <select name="selectedActors" class="form-control chosen-select" multiple>
+                    @if (ViewData["Actors"] != null && ViewBag.SelectedActors != null)
+                    {
+                        foreach (var actor in (IEnumerable<SelectListItem>)ViewData["Actors"])
+                        {
+                            <option value="@actor.Value" selected="@(ViewBag.SelectedActors.Contains(int.Parse(actor.Value)) ? "selected" : null)">
+                                @actor.Text
+                            </option>
+                        }
+                    }
+                    else
+                    {
+                        <option disabled>No actors available</option>
+                    }
+                </select>
+            </div>
+            <!-- Directors -->
+            <div class="form-group">
+                <label>Directors</label>
+                <select name="selectedDirectors" class="form-control chosen-select" multiple>
+                    @if (ViewData["Directors"] != null && ViewBag.SelectedDirectors != null)
+                    {
+                        foreach (var director in (IEnumerable<SelectListItem>)ViewData["Directors"])
+                        {
+                            <option value="@director.Value" selected="@(ViewBag.SelectedDirectors.Contains(int.Parse(director.Value)) ? "selected" : null)">
+                                @director.Text
+                            </option>
+                        }
+                    }
+                    else
+                    {
+                        <option disabled>No directors available</option>
                     }
                 </select>
             </div>

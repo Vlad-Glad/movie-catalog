@@ -54,15 +54,37 @@ namespace CatalogInfrastructure.Controllers
             return View();
         }
 
-        // POST: UserRatings/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("UserId,MovieId,Value,Id")] UserRating userRating)
         {
             if (ModelState.IsValid)
             {
+                bool movieExists = await _context.Movies.AnyAsync(m => m.Id == userRating.MovieId);
+                if (!movieExists)
+                {
+                    ModelState.AddModelError("MovieId", "Selected movie doesn't exist.");
+                    ViewData["MovieId"] = new SelectList(_context.Movies, "Id", "Title", userRating.MovieId);
+                    return View(userRating);
+                }
+
+                bool userExists = await _context.Users.AnyAsync(u => u.Id == userRating.UserId);
+                if (!userExists)
+                {
+                    ModelState.AddModelError("UserId", "Selected user doesn't exist.");
+                    ViewData["UserId"] = new SelectList(_context.Movies, "Id", "Title", userRating.UserId);
+                    return View(userRating);
+                }
+
+                bool duplicateExists = await _context.UserRatings
+                    .AnyAsync(ur => ur.UserId == userRating.UserId && ur.MovieId == userRating.MovieId);
+
+                if (duplicateExists)
+                {
+                    ModelState.AddModelError(string.Empty, "This user has already rated the selected movie.");
+                    ViewData["MovieId"] = new SelectList(_context.Movies, "Id", "Title", userRating.MovieId);
+                    return View(userRating);
+                }
                 _context.Add(userRating);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -90,9 +112,6 @@ namespace CatalogInfrastructure.Controllers
             return View(userRating);
         }
 
-        // POST: UserRatings/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("UserId,MovieId,Value,Id")] UserRating userRating)

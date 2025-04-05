@@ -52,19 +52,37 @@ namespace CatalogInfrastructure.Controllers
             return View();
         }
 
-        // POST: Ratings/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MovieId,Source,Value,Id")] Rating rating)
+        public async Task<IActionResult> Create([Bind("MovieId,Source,Value")] Rating rating)
         {
             if (ModelState.IsValid)
             {
+                bool movieExists = await _context.Movies.AnyAsync(m => m.Id == rating.MovieId);
+                
+                if (!movieExists)
+                {
+                    ModelState.AddModelError("MovieId", "Selected movie doesn't exist");
+                    ViewData["MovieId"] = new SelectList(_context.Movies, "Id", "Title", rating.MovieId);
+                    return View(rating);
+                }
+
+                bool duplicateSourceExists = await _context.Ratings
+                        .AnyAsync(r => r.MovieId == rating.MovieId && r.Source.ToLower() == rating.Source.ToLower());
+
+                if (duplicateSourceExists)
+                {
+                    ModelState.AddModelError("Source", "This source already exists for the selected movie.");
+                    ViewData["MovieId"] = new SelectList(_context.Movies, "Id", "Title", rating.MovieId);
+                    return View(rating);
+                }
+
+                rating.Movie = await _context.Movies.FindAsync(rating.MovieId);
                 _context.Add(rating);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index)); 
             }
+
             ViewData["MovieId"] = new SelectList(_context.Movies, "Id", "Title", rating.MovieId);
             return View(rating);
         }
@@ -100,6 +118,25 @@ namespace CatalogInfrastructure.Controllers
 
             if (ModelState.IsValid)
             {
+                bool movieExists = await _context.Movies.AnyAsync(m => m.Id == rating.MovieId);
+                if (!movieExists)
+                {
+                    ModelState.AddModelError("MovieId", "Selected movie doesn't exist");
+                    ViewData["MovieId"] = new SelectList(_context.Movies, "Id", "Title", rating.MovieId);
+                    return View(rating);
+                }
+
+                bool duplicateSourceExists = await _context.Ratings
+                    .AnyAsync(r => r.MovieId == rating.MovieId &&
+                                   r.Id != rating.Id &&
+                                   r.Source.ToLower() == rating.Source.ToLower());
+
+                if (duplicateSourceExists)
+                {
+                    ModelState.AddModelError("Source", "This source already exists for the selected movie.");
+                    ViewData["MovieId"] = new SelectList(_context.Movies, "Id", "Title", rating.MovieId);
+                    return View(rating);
+                }
                 try
                 {
                     _context.Update(rating);

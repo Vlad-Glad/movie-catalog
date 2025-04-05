@@ -38,12 +38,35 @@
                 <span asp-validation-for="Poster" class="text-danger"></span>
             </div>
 
+            <!-- GENRES-->
             <div class="form-group">
                 <label>Genres</label>
                 <select id="genreSelect" name="selectedGenres" multiple="multiple" class="form-control chosen-select">
                     @foreach (var genre in (IEnumerable<SelectListItem>)ViewData["Genres"])
                     {
                         <option value="@genre.Value">@genre.Text</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Actors-->
+            <div class="form-group">
+                <label>Actors</label>
+                <select id="actorSelect" name="selectedActors" multiple="multiple" class="form-control chosen-select">
+                    @foreach (var actor in (IEnumerable<SelectListItem>)ViewData["Actors"])
+                    {
+                        <option value="@actor.Value">@actor.Text</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Directors-->
+            <div class="form-group">
+                <label>Directors</label>
+                <select id="directorSelect" name="selectedDirectors" multiple="multiple" class="form-control chosen-select">
+                    @foreach (var director in (IEnumerable<SelectListItem>)ViewData["Directors"])
+                    {
+                        <option value="@director.Value">@director.Text</option>
                     }
                 </select>
             </div>
@@ -68,10 +91,10 @@
     <script>
         $(document).ready(function () {
             $(".chosen-select").chosen({
-                no_results_text: "No genres found!",
+                no_results_text: "No data found!",
                 width: "100%",
-                                allow_single_deselect: true,
-                placeholder_text_multiple: "---Choose genres---"
+                allow_single_deselect: true,
+                placeholder_text_multiple: "---Choose---"
             });
         });
     </script>

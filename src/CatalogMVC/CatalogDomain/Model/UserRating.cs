@@ -19,7 +19,6 @@ public partial class UserRating : Entity
     [Display(Name = "Score")]
     public byte? Value { get; set; }
 
-    public virtual Movie Movie { get; set; } = null!;
-
-    public virtual User User { get; set; } = null!;
+    public virtual Movie? Movie { get; set; }
+    public virtual User? User { get; set; }
 }

@@ -54,15 +54,24 @@ namespace CatalogInfrastructure.Controllers
             return View();
         }
 
-        // POST: ToWatchLists/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("UserId,MovieId,AddedDate,Id")] ToWatchList toWatchList)
         {
             if (ModelState.IsValid)
             {
+                bool alreadyExists = await _context.ToWatchLists
+                        .AnyAsync(w => w.UserId == toWatchList.UserId && w.MovieId == toWatchList.MovieId);
+
+                if (alreadyExists)
+                {
+                    ModelState.AddModelError(string.Empty, "This movie is already in the user's watch list.");
+                    ViewData["MovieId"] = new SelectList(_context.Movies, "Id", "Title", toWatchList.MovieId);
+                    return View(toWatchList);
+                }
+
+                toWatchList.AddedDate = DateTime.Now;
+
                 _context.Add(toWatchList);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -90,9 +99,6 @@ namespace CatalogInfrastructure.Controllers
             return View(toWatchList);
         }
 
-        // POST: ToWatchLists/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("UserId,MovieId,AddedDate,Id")] ToWatchList toWatchList)

@@ -21,5 +21,6 @@ public partial class Rating : Entity
     [Display(Name ="Score")]
     public int Value { get; set; }
 
-    public virtual Movie Movie { get; set; } = null!;
+    public virtual Movie? Movie { get; set; }
+
 }

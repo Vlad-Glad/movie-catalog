@@ -13,13 +13,13 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.Movie)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Source)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Value)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Movie)
             </th>
             <th></th>
         </tr>
@@ -28,14 +28,15 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.Movie.Title)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Source)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Value)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Movie.Title)
-            </td>
+
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
@@ -45,3 +46,77 @@
 }
     </tbody>
 </table>
+
+
+<select id="ratingSourceSelector" class="form-select mb-3" onchange="loadTopRatedChart()">
+    <option disabled selected>Завантаження джерел...</option>
+</select>
+
+<div id="topRatedMoviesChart"></div>
+
+@section Scripts
+{
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(initializeCharts);
+
+        function initializeCharts() {
+            fetch('/api/chart/sources')
+                .then(response => response.json())
+                .then(sources => {
+                    const selector = document.getElementById("ratingSourceSelector");
+                    selector.innerHTML = "";
+
+                    sources.forEach(source => {
+                        const option = document.createElement("option");
+                        option.value = source;
+                        option.textContent = source;
+                        selector.appendChild(option);
+                    });
+
+                    if (sources.length > 0) {
+                        selector.value = sources[0];
+                        loadTopRatedChart();
+                    }
+                })
+                .catch(error => console.error("Error during data download:", error));
+        }
+
+        function loadTopRatedChart() {
+            const selectedSource = document.getElementById("ratingSourceSelector").value;
+
+            fetch(`/api/chart/topRatedMovies?source=${encodeURIComponent(selectedSource)}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Chart data:", data);
+
+                    const dataTable = new google.visualization.DataTable();
+                    dataTable.addColumn('string', 'Movie Title');
+                    dataTable.addColumn('number', 'Rating');
+
+                    data.forEach(item => {
+                        dataTable.addRow([item.title, item.ratingValue]);
+                    });
+
+                    const options = {
+                        title: `Top 10 Movies by Source: ${selectedSource}`,
+                        width: '100%',
+                        height: 600,
+                        legend: { position: 'none' },
+                        chartArea: { width: '80%' },
+                        hAxis: {
+                            minValue: 0,
+                            maxValue: 100,
+                            format: '0'
+                        }
+                    };
+
+                    const chart = new google.visualization.BarChart(document.getElementById('topRatedMoviesChart'));
+                    chart.draw(dataTable, options);
+                })
+                .catch(error => console.error("Error during chart creation", error));
+        }
+    </script>
+}
+

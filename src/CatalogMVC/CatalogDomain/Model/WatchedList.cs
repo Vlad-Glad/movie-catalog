@@ -19,7 +19,6 @@ public partial class WatchedList : Entity
     [Required(ErrorMessage = "Watched date is required.")]
     public DateTime? WatchedDate { get; set; }
 
-    public virtual Movie Movie { get; set; } = null!;
-
-    public virtual User User { get; set; } = null!;
+    public virtual Movie? Movie { get; set; }
+    public virtual User? User { get; set; }
 }

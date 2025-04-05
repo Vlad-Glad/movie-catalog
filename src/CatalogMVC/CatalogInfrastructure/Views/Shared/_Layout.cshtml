@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - CatalogInfrastructure</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/_02bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/03bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CatalogInfrastructure.styles.css" asp-append-version="true" />
 </head>
@@ -36,6 +36,18 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Ratings" asp-action="Index">Ratings</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="UserRatings" asp-action="Index">User ratings</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="ToWatchLists" asp-action="Index">To watch</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="WatchedLists" asp-action="Index">Watched</a>
                         </li>
                     </ul>
                 </div>

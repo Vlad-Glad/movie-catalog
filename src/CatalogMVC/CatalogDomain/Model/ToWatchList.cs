@@ -16,7 +16,7 @@ public partial class ToWatchList : Entity
 
     public DateTime? AddedDate { get; set; }
 
-    public virtual Movie Movie { get; set; } = null!;
+    public virtual Movie? Movie { get; set; }
 
-    public virtual User User { get; set; } = null!;
+    public virtual User? User { get; set; }
 }

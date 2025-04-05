@@ -54,15 +54,23 @@ namespace CatalogInfrastructure.Controllers
             return View();
         }
 
-        // POST: WatchedLists/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("UserId,MovieId,WatchedDate,Id")] WatchedList watchedList)
         {
             if (ModelState.IsValid)
             {
+                bool alreadyExists = await _context.WatchedLists
+                        .AnyAsync(w => w.UserId == watchedList.UserId && w.MovieId == watchedList.MovieId);
+
+                if (alreadyExists)
+                {
+                    ModelState.AddModelError(string.Empty, "This movie is already in the user's watch list.");
+                    ViewData["MovieId"] = new SelectList(_context.Movies, "Id", "Title", watchedList.MovieId);
+                    return View(watchedList);
+                }
+
+
                 _context.Add(watchedList);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

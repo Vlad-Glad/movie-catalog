@@ -57,3 +57,51 @@
 }
     </tbody>
 </table>
+
+
+<div id="countByYearChart"></div>
+
+
+@section Scripts
+{
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawCharts);
+
+        function drawCharts() {
+            fetch('/api/chart/countByYear')
+                .then(response => response.json())
+                .then(data => {
+                    const dataTable = new google.visualization.DataTable();
+                    dataTable.addColumn('string', 'Year');
+                    dataTable.addColumn('number', 'Movies number');
+
+                    data.forEach(item => {
+                        dataTable.addRow([item.year, item.count]);
+                 });
+
+                    const options = {
+                        title: 'Movies by Year',
+                        width: '100%',
+                        height: 600,
+                        legend: { position: 'none' },
+                        chartArea: { width: '90%' },
+                        vAxis: {
+                            title: 'Amount',
+                            viewWindow: {
+                                min: 0,
+                                max: 20
+                            },
+                            ticks: Array.from({ length: 21 }, (_, i) => i), // [0, 1, 2, ..., 20]
+                            format: '0'
+                        }
+                    };
+
+                    const chart = new google.visualization.ColumnChart(document.getElementById('countByYearChart'));
+
+                    chart.draw(dataTable, options);
+                });
+        }
+    </script>
+}
