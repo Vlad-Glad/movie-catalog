@@ -1,8 +1,17 @@
+using CatalogDomain.Model;
 using CatalogInfrastructure;
+using CatalogInfrastructure.Services;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<MovieDataPortServiceFactory>();
+builder.Services.AddScoped<IReportService, WordReportService>();
+//builder.Services.AddScoped<IImportService<Movie>, MovieImportService>();
+////builder.Services.AddScoped<IExportService<Movie>, MovieExportService>();
+//builder.Services.AddScoped<IDataPortServiceFactory<Movie>, MovieDataPortServiceFactory>();
+
 
 
 // Add services to the container.

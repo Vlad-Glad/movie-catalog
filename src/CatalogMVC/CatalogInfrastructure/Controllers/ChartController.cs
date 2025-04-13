@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+// Гістраграма
 namespace CatalogInfrastructure.Controllers
 {
     [Route("api/[controller]")]
@@ -64,9 +65,5 @@ namespace CatalogInfrastructure.Controllers
 
             return new JsonResult(responseItems);
         }
-
-
-
-
     }
 }
