@@ -5,6 +5,7 @@ namespace CatalogDomain.Model;
 
 public partial class DirectedBy : Entity
 {
+
     public int MovieId { get; set; }
 
     public int DirectorId { get; set; }

@@ -9,9 +9,7 @@ namespace CatalogDomain.Model
 {
    public class AspNetCoreUser: IdentityUser
    {
-        public virtual ICollection<ToWatchList> ToWatchLists { get; set; } = new List<ToWatchList>();
-        public virtual ICollection<UserRating> UserRatings { get; set; } = new List<UserRating>();
-        public virtual ICollection<WatchedList> WatchedLists { get; set; } = new List<WatchedList>();
-   }
+        public string? FullName { get; set; }
+    }
 }
 

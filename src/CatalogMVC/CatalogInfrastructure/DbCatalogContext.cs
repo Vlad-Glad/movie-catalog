@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using CatalogDomain.Model;
 using Microsoft.EntityFrameworkCore;
+using CatalogDomain.Model;
 
 namespace CatalogInfrastructure;
 
@@ -34,14 +34,12 @@ public partial class DbCatalogContext : DbContext
 
     public virtual DbSet<ToWatchList> ToWatchLists { get; set; }
 
-    public virtual DbSet<User> Users { get; set; }
-
     public virtual DbSet<UserRating> UserRatings { get; set; }
 
     public virtual DbSet<WatchedList> WatchedLists { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=VladLaptop\\SQLEXPRESS; Database=DbCatalog; Trusted_Connection=True; TrustServerCertificate=True; ");
+        => optionsBuilder.UseSqlServer("Name=DefaultConnection");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -60,7 +58,6 @@ public partial class DbCatalogContext : DbContext
 
             entity.ToTable("DirectedBy");
 
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.DirectorId).HasColumnName("DirectorID");
             entity.Property(e => e.MovieId).HasColumnName("MovieID");
 
@@ -71,7 +68,6 @@ public partial class DbCatalogContext : DbContext
 
             entity.HasOne(d => d.Movie).WithMany(p => p.DirectedBies)
                 .HasForeignKey(d => d.MovieId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_DirectedBy_Movie");
         });
 
@@ -102,7 +98,6 @@ public partial class DbCatalogContext : DbContext
         {
             entity.ToTable("MovieCast");
 
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.ActorId).HasColumnName("ActorID");
             entity.Property(e => e.MovieId).HasColumnName("MovieID");
 
@@ -113,7 +108,6 @@ public partial class DbCatalogContext : DbContext
 
             entity.HasOne(d => d.Movie).WithMany(p => p.MovieCasts)
                 .HasForeignKey(d => d.MovieId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_MovieCast_Movie");
         });
 
@@ -123,7 +117,6 @@ public partial class DbCatalogContext : DbContext
 
             entity.ToTable("MovieGenre");
 
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.GenreId).HasColumnName("GenreID");
             entity.Property(e => e.MovieId).HasColumnName("MovieID");
 
@@ -134,7 +127,6 @@ public partial class DbCatalogContext : DbContext
 
             entity.HasOne(d => d.Movie).WithMany(p => p.MovieGenres)
                 .HasForeignKey(d => d.MovieId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_MovieGenre_Movie");
         });
 
@@ -147,7 +139,6 @@ public partial class DbCatalogContext : DbContext
 
             entity.HasOne(d => d.Movie).WithMany(p => p.Ratings)
                 .HasForeignKey(d => d.MovieId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Rating_Movie");
         });
 
@@ -157,72 +148,44 @@ public partial class DbCatalogContext : DbContext
 
             entity.ToTable("ToWatchList");
 
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.AddedDate).HasColumnType("datetime");
             entity.Property(e => e.MovieId).HasColumnName("MovieID");
-            entity.Property(e => e.UserId).HasColumnName("UserID");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(450)
+                .HasColumnName("UserID");
 
             entity.HasOne(d => d.Movie).WithMany(p => p.ToWatchLists)
                 .HasForeignKey(d => d.MovieId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ToWatchList_Movie");
-
-            entity.HasOne(d => d.User).WithMany(p => p.ToWatchLists)
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ToWatchList_User");
-        });
-
-        modelBuilder.Entity<User>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Users__1788CCAC58DB75AF");
-
-            entity.ToTable("User");
-
-            entity.HasIndex(e => e.Email, "UQ__Users__A9D1053446B2D905").IsUnique();
-
-            entity.Property(e => e.Email).HasMaxLength(320);
-            entity.Property(e => e.PasswordHash).HasMaxLength(64);
-            entity.Property(e => e.Role).HasMaxLength(10);
         });
 
         modelBuilder.Entity<UserRating>(entity =>
         {
             entity.ToTable("UserRating");
 
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.MovieId).HasColumnName("MovieID");
-            entity.Property(e => e.UserId).HasColumnName("UserID");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(450)
+                .HasColumnName("UserID");
 
             entity.HasOne(d => d.Movie).WithMany(p => p.UserRatings)
                 .HasForeignKey(d => d.MovieId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_UserRating_Movie");
-
-            entity.HasOne(d => d.User).WithMany(p => p.UserRatings)
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_UserRating_User");
         });
 
         modelBuilder.Entity<WatchedList>(entity =>
         {
             entity.ToTable("WatchedList");
 
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.MovieId).HasColumnName("MovieID");
-            entity.Property(e => e.UserId).HasColumnName("UserID");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(450)
+                .HasColumnName("UserID");
             entity.Property(e => e.WatchedDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.Movie).WithMany(p => p.WatchedLists)
                 .HasForeignKey(d => d.MovieId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_WatchedList_Movie");
-
-            entity.HasOne(d => d.User).WithMany(p => p.WatchedLists)
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_WatchedList_User");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -8,7 +8,7 @@ public partial class ToWatchList : Entity
 {
     [Required(ErrorMessage = "This field can't be empty!")]
     [Range(0, int.MaxValue, ErrorMessage = "Can't be negative")]
-    public int UserId { get; set; }
+    public string UserId { get; set; } = null!;
 
     [Required(ErrorMessage = "This field can't be empty!")]
     [Range(0, int.MaxValue, ErrorMessage = "Can't be negative")]
@@ -16,7 +16,5 @@ public partial class ToWatchList : Entity
 
     public DateTime? AddedDate { get; set; }
 
-    public virtual Movie? Movie { get; set; }
-
-    public virtual User? User { get; set; }
+    public virtual Movie Movie { get; set; } = null!;
 }

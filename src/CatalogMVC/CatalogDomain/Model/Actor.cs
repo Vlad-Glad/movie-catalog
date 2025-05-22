@@ -7,6 +7,7 @@ namespace CatalogDomain.Model;
 
 public partial class Actor : Entity
 {
+
     [Required(ErrorMessage = "First name field can't be empty!")]
     [StringLength(100, MinimumLength = 3, ErrorMessage = "Minimum 3 symbols")]
     [Display(Name = "First name")]

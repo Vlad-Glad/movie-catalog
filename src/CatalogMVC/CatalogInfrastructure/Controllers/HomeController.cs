@@ -1,6 +1,6 @@
-using CatalogInfrastructure.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using CatalogDomain.Model;
 
 namespace CatalogInfrastructure.Controllers
 {
