@@ -16,6 +16,10 @@ public partial class DbCatalogContext : DbContext
     {
     }
 
+
+    public DbSet<ActorPair> ActorPairs { get; set; }
+
+
     public virtual DbSet<Actor> Actors { get; set; }
 
     public virtual DbSet<DirectedBy> DirectedBies { get; set; }

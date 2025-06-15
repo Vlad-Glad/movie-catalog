@@ -1,5 +1,271 @@
-﻿@model IEnumerable<CatalogDomain.Model.Genre>
-
+﻿
 @{
     ViewData["Title"] = "Home Page";
 }
+
+<h1>Меню лабораторної</h1>
+<ul>
+    <li><a asp-controller="Movies" asp-action="Index">Фільми</a></li>
+    <li><a asp-controller="Directors" asp-action="Index">Режисери</a></li>
+    <li><a asp-controller="Actors" asp-action="Index">Актори</a></li>
+    <li><a asp-controller="Genres" asp-action="Index">Жанри</a></li>
+</ul>
+
+
+<h3>1. Фільми за жанром</h3>
+<label for="genreName">Введіть назву жанру:</label>
+<form asp-controller="Queries" asp-action="SearchByGenre" method="post"  style="display: flex; gap: 10px;">
+    <input type="text" name="genreName" id="genreName" class="form-control w-50" placeholder="Назва жанру" />
+    <button type="submit" class="btn btn-primary">Пошук</button>
+</form>
+<br />
+
+<h3>2. Фільми за режисером</h3>
+<label for="directorLastName">Введіть фамілію режисера:</label>
+<form asp-controller="Queries" asp-action="SearchByDirector" method="post" style="display: flex; gap: 10px; margin-bottom: 20px;">
+    <input type="text" name="directorLastName" class="form-control w-50" placeholder="Прізвище режисера" />
+    <button type="submit" class="btn btn-primary">Пошук</button>
+</form>
+<br />
+
+<h3>3. Фільми за актором</h3>
+<label for="actorLastName">Введіть фамілію актора:</label>
+<form asp-controller="Queries" asp-action="SearchByActor" method="post" style="display: flex; gap: 10px; margin-bottom: 20px;">
+    <input type="text" name="actorLastName" class="form-control w-50" placeholder="Прізвище актора" />
+    <button type="submit" class="btn btn-primary">Пошук</button>
+</form>
+<br />
+
+<h3>4. Актори, які знімались більше ніж у X фільмах</h3>
+<label for="minCount">Введіть число X:</label>
+<form asp-controller="Queries" asp-action="SearchActorsByMinMovies" method="post" style="display: flex; gap: 10px; margin-bottom: 20px;">
+    <input type="number" name="minCount" class="form-control w-50" placeholder="Мінімум фільмів" />
+    <button type="submit" class="btn btn-primary">Пошук</button>
+</form>
+<br />
+
+<h2>5. Режисери, які зрежисерували більше ніж X фільмів</h2>
+<label for="minCount">Введіть число X:</label>
+<form asp-controller="Queries" asp-action="SearchDirectorsByMinMovies" method="post" style="display: flex; gap: 10px; margin-bottom: 20px;">
+    <input type="number" name="minCount" class="form-control w-50" placeholder="Мінімум фільмів" />
+    <button type="submit" class="btn btn-primary">Пошук</button>
+</form>
+<br />
+
+<h2>6. Актори, які знімались у тих самих фільмах, що і заданий актор</h2>
+<label for="actorLastName">Введіть фамілію актора:</label>
+<form asp-controller="Queries" asp-action="ActorsWithSameMovies" method="post" style="display: flex; gap: 10px; margin-bottom: 20px;">
+    <input type="text" name="actorLastName" class="form-control w-50" placeholder="Прізвище актора" />
+    <button type="submit" class="btn btn-primary">Пошук</button>
+</form>
+<br />
+
+<h2>7. Режисери, які зрежисерували всі фільми жанру</h2>
+<label for="genreName">Введіть назву жанру:</label>
+<form asp-controller="Queries" asp-action="DirectorsOfAllMoviesByGenre" method="post" style="display: flex; gap: 10px; margin-bottom: 20px;">
+    <input type="text" name="genreName" class="form-control w-50"  placeholder="Назва жанру" />
+    <button type="submit" class="btn btn-primary">Пошук</button>
+</form>
+<br />
+
+<h2>8. Пари акторів, які мають ідентичну фільмографію</h2>
+<form asp-controller="Queries" asp-action="ActorsWithIdenticalFilmography" method="post">
+    <button type="submit" class="btn btn-primary">Пошук</button>
+</form>
+
+
+
+@if (Model != null)
+{
+    if (Model.Count == 0)
+    {
+        <p>Нічого не знайдено.</p>
+    }
+    else
+    {
+        <h3>Результати:</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Назва фільму</th>
+                    <th>Рік</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var movie in Model)
+                {
+                    <tr>
+                        <td>@movie.Title</td>
+                        <td>@movie.Year</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+
+
+@if (ViewBag.ActorResults != null)
+{
+    var actors = (List<CatalogDomain.Model.Actor>)ViewBag.ActorResults;
+
+    if (!actors.Any())
+    {
+        <p>Нічого не знайдено серед акторів.</p>
+    }
+    else
+    {
+        <h3>Актори:</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Ім’я</th>
+                    <th>Прізвище</th>
+                    <th>Національність</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var actor in actors)
+                {
+                    <tr>
+                        <td>@actor.FirstName</td>
+                        <td>@actor.LastName</td>
+                        <td>@actor.Nationality</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+
+@if (ViewBag.DirectorResults != null)
+{
+    var directors = (List<CatalogDomain.Model.Director>)ViewBag.DirectorResults;
+
+    if (!directors.Any())
+    {
+        <p>Нічого не знайдено серед режисерів.</p>
+    }
+    else
+    {
+        <h3>Режисери:</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Ім’я</th>
+                    <th>Прізвище</th>
+                    <td>Національність</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var director in directors)
+                {
+                    <tr>
+                        <td>@director.FirstName</td>
+                        <td>@director.LastName</td>
+                        <td>@director.Nationality</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+
+@if (ViewBag.SameMovieActors != null)
+{
+    var actors = (List<CatalogDomain.Model.Actor>)ViewBag.SameMovieActors;
+
+    if (!actors.Any())
+    {
+        <p>Немає акторів із такою ж фільмографією.</p>
+    }
+    else
+    {
+        <h3>Актори з такою ж фільмографією:</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Ім’я</th>
+                    <th>Прізвище</th>
+                    <th>Національність</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var actor in actors)
+                {
+                    <tr>
+                        <td>@actor.FirstName</td>
+                        <td>@actor.LastName</td>
+                        <td>@actor.Nationality</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+
+@if (ViewBag.AllGenreDirectors != null)
+{
+    var directors = (List<CatalogDomain.Model.Director>)ViewBag.AllGenreDirectors;
+
+    if (!directors.Any())
+    {
+        <p>Немає режисерів, які зрежисерували всі фільми жанру.</p>
+    }
+    else
+    {
+        <h3>Режисери, які зрежисерували всі фільми жанру:</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Ім’я</th>
+                    <th>Прізвище</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var director in directors)
+                {
+                    <tr>
+                        <td>@director.FirstName</td>
+                        <td>@director.LastName</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+
+@if (ViewBag.ActorPairs != null)
+{
+    var pairs = (List<CatalogDomain.Model.ActorPair>)ViewBag.ActorPairs;
+
+    if (!pairs.Any())
+    {
+        <p>Немає пар акторів з однаковою фільмографією.</p>
+    }
+    else
+    {
+        <h3>Пари акторів з однаковою фільмографією:</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Актор 1</th>
+                    <th>Актор 2</th>
+                    <th>Спільні фільми</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var pair in pairs)
+                {
+                    <tr>
+                        <td>@pair.Actor1FirstName @pair.Actor1LastName</td>
+                        <td>@pair.Actor2FirstName @pair.Actor2LastName</td>
+                        <td>@pair.Movies</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+
+
