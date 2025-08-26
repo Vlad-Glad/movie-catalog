@@ -25,24 +25,6 @@
             <th>MovieLength</th>
             <th>Poster</th>
             <th></th>
-
-            @* <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Year)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MovieLength)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Poster)
-            </th> 
-            <th></th>
-            *@
         </tr>
     </thead>
     <tbody>
@@ -53,22 +35,6 @@
             <td>@item.Description</td>
             <td>@item.MovieLength</td>
             <td>@item.Poster</td>
-
-            @* <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Year)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MovieLength)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Poster)
-            </td> *@
 
             <td class = "text-nowrap">
                 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Details</a>

@@ -8,7 +8,7 @@ public partial class Movie : Entity
 {
     [Required(ErrorMessage = "Title field can't be empty!")]
     [StringLength(100, MinimumLength = 3, ErrorMessage = "Minimum 3 symbols")]
-    [Display(Name = "Movie title")]
+    [Display(Name = "Title")]
     public string Title { get; set; } = null!;
 
     [Required(ErrorMessage = "Year field can't be empty!")]
@@ -19,11 +19,11 @@ public partial class Movie : Entity
 
     [Required(ErrorMessage = "Title field can't be empty!")]
     [Range(1, 1000000, ErrorMessage = "Length can't be less than 1 minute ")]
-    [Display(Name = "Movie length in min")]
+    [Display(Name = "Movie length")]
     public int MovieLength { get; set; }
 
     [Url(ErrorMessage = "Invalid URL format.")]
-    [Display(Name = "URL to poster in storage")]
+    [Display(Name = "Poster URL")]
     public string? Poster { get; set; }
 
     public virtual ICollection<DirectedBy> DirectedBies { get; set; } = new List<DirectedBy>();
