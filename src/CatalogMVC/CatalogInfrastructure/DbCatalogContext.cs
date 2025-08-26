@@ -148,11 +148,14 @@ public partial class DbCatalogContext : DbContext
 
             entity.ToTable("ToWatchList");
 
+
             entity.Property(e => e.AddedDate).HasColumnType("datetime");
             entity.Property(e => e.MovieId).HasColumnName("MovieID");
-            entity.Property(e => e.UserId)
-                .HasMaxLength(450)
-                .HasColumnName("UserID");
+            entity.HasOne<AspNetCoreUser>()
+                .WithMany()
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ToWatchList_IdentityUser");
 
             entity.HasOne(d => d.Movie).WithMany(p => p.ToWatchLists)
                 .HasForeignKey(d => d.MovieId)
@@ -164,9 +167,11 @@ public partial class DbCatalogContext : DbContext
             entity.ToTable("UserRating");
 
             entity.Property(e => e.MovieId).HasColumnName("MovieID");
-            entity.Property(e => e.UserId)
-                .HasMaxLength(450)
-                .HasColumnName("UserID");
+            entity.HasOne<AspNetCoreUser>()
+                .WithMany()
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_UserRating_IdentityUser");
 
             entity.HasOne(d => d.Movie).WithMany(p => p.UserRatings)
                 .HasForeignKey(d => d.MovieId)
@@ -178,9 +183,11 @@ public partial class DbCatalogContext : DbContext
             entity.ToTable("WatchedList");
 
             entity.Property(e => e.MovieId).HasColumnName("MovieID");
-            entity.Property(e => e.UserId)
-                .HasMaxLength(450)
-                .HasColumnName("UserID");
+            entity.HasOne<AspNetCoreUser>()
+                .WithMany()
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_WatchedList_IdentityUser");
             entity.Property(e => e.WatchedDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.Movie).WithMany(p => p.WatchedLists)

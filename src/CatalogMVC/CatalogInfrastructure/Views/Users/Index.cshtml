@@ -1,47 +1,37 @@
-﻿@* @model IEnumerable<CatalogDomain.Model.User> *@
+﻿@model IEnumerable<CatalogDomain.Model.AspNetCoreUser>
 
-@* @{ *@
-@*     ViewData["Title"] = "Index"; *@
-@* } *@
+@{
+    ViewData["Title"] = "Users";
+}
 
-@* <h1>Index</h1> *@
+<h1>Users</h1>
 
-@* <p> *@
-@*     <a asp-action="Create">Create New</a> *@
-@* </p> *@
-@* <table class="table"> *@
-@*     <thead> *@
-@*         <tr> *@
-@*             <th> *@
-@*                 @Html.DisplayNameFor(model => model.Email) *@
-@*             </th> *@
-@*             <th> *@
-@*                 @Html.DisplayNameFor(model => model.PasswordHash) *@
-@*             </th> *@
-@*             <th> *@
-@*                 @Html.DisplayNameFor(model => model.Role) *@
-@*             </th> *@
-@*             <th></th> *@
-@*         </tr> *@
-@*     </thead> *@
-@*     <tbody> *@
-@* @foreach (var item in Model) { *@
-@*         <tr> *@
-@*             <td> *@
-@*                 @Html.DisplayFor(modelItem => item.Email) *@
-@*             </td> *@
-@*             <td> *@
-@*                 @Html.DisplayFor(modelItem => item.PasswordHash) *@
-@*             </td> *@
-@*             <td> *@
-@*                 @Html.DisplayFor(modelItem => item.Role) *@
-@*             </td> *@
-@*             <td> *@
-@*                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> | *@
-@*                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> | *@
-@*                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> *@
-@*             </td> *@
-@*         </tr> *@
-@* } *@
-@*     </tbody> *@
-@* </table> *@
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>UserName</th>
+            <th>Email</th>
+            <th>Full Name</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td>@u.UserName</td>
+                <td>@u.Email</td>
+                <td>@u.FullName</td>
+                <td class="text-nowrap">
+                    <a asp-action="Details" asp-route-id="@u.Id" class="btn btn-sm btn-outline-secondary">Details</a>
+                    <a asp-action="Edit" asp-route-id="@u.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@u.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<CatalogDomain.Model.Movie>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Movie";
 }
 
 <h1>Movies</h1>
@@ -13,12 +13,20 @@
 <a class="btn btn-primary mb-3" type="=submit" asp-area="" asp-controller="Movies" asp-action="ExportDocx">Export to dox</a>
 
 <p>
-    <a asp-action="Create">Add Movie</a>
+    <a asp-action="Create" class="btn btn-primary">Add Movie</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
-            <th>
+            <th>Title</th>
+            <th>Year</th>
+            <th>Description</th>
+            <th>MovieLength</th>
+            <th>Poster</th>
+            <th></th>
+
+            @* <th>
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
@@ -32,14 +40,21 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Poster)
-            </th>
+            </th> 
             <th></th>
+            *@
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
+            <td>@item.Title</td>
+            <td>@item.Year</td>
+            <td>@item.Description</td>
+            <td>@item.MovieLength</td>
+            <td>@item.Poster</td>
+
+            @* <td>
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
@@ -53,11 +68,12 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Poster)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td> *@
+
+            <td class = "text-nowrap">
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Details</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
             </td>
         </tr>
 }

@@ -14,7 +14,7 @@ namespace CatalogInfrastructure.Services
         public async Task<MemoryStream> GenerateSiteStatisticsReportAsync(CancellationToken cancellationToken = default)
         {
             var movieCount = await _context.Movies.CountAsync(cancellationToken);
-            var userCount = await _context.Users.CountAsync(cancellationToken); 
+            //var userCount = await _context.Users.CountAsync(cancellationToken); 
             var genreCounts = await _context.Genres
                 .Include(g => g.MovieGenres)
                 .Select(g => new { g.GenreName, MovieCount = g.MovieGenres.Count })
@@ -27,7 +27,7 @@ namespace CatalogInfrastructure.Services
                     .FontSize(18).Bold().SpacingAfter(20);
 
                 doc.InsertParagraph($"Total number of movies: {movieCount}");
-                doc.InsertParagraph($"Number of registered users: {userCount}");
+                //doc.InsertParagraph($"Number of registered users: {userCount}");
                 doc.InsertParagraph("Number of movies by genre:").SpacingAfter(10);
 
                 foreach (var genre in genreCounts)

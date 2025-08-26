@@ -13,10 +13,12 @@ namespace CatalogInfrastructure.Controllers
     public class ToWatchListsController : Controller
     {
         private readonly DbCatalogContext _context;
+        private readonly IdentityContext _identityContext;
 
-        public ToWatchListsController(DbCatalogContext context)
+        public ToWatchListsController(DbCatalogContext context, IdentityContext identityContext)
         {
             _context = context;
+            _identityContext = identityContext;
         }
 
         // GET: ToWatchLists
@@ -50,7 +52,7 @@ namespace CatalogInfrastructure.Controllers
         public IActionResult Create()
         {
             ViewData["MovieId"] = new SelectList(_context.Movies, "Id", "Title");
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email");
+            ViewData["UserId"] = new SelectList(_identityContext.Users, "Id", "Email");
             return View();
         }
 
@@ -77,7 +79,7 @@ namespace CatalogInfrastructure.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["MovieId"] = new SelectList(_context.Movies, "Id", "Title", toWatchList.MovieId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", toWatchList.UserId);
+            ViewData["UserId"] = new SelectList(_identityContext.Users, "Id", "Email", toWatchList.UserId);
             return View(toWatchList);
         }
 
@@ -95,7 +97,7 @@ namespace CatalogInfrastructure.Controllers
                 return NotFound();
             }
             ViewData["MovieId"] = new SelectList(_context.Movies, "Id", "Title", toWatchList.MovieId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", toWatchList.UserId);
+            ViewData["UserId"] = new SelectList(_identityContext.Users, "Id", "Email", toWatchList.UserId);
             return View(toWatchList);
         }
 
@@ -129,7 +131,7 @@ namespace CatalogInfrastructure.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["MovieId"] = new SelectList(_context.Movies, "Id", "Title", toWatchList.MovieId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", toWatchList.UserId);
+            ViewData["UserId"] = new SelectList(_identityContext.Users, "Id", "Email", toWatchList.UserId);
             return View(toWatchList);
         }
 

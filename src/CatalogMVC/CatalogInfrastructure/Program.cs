@@ -2,6 +2,7 @@ using CatalogDomain.Model;
 using CatalogInfrastructure;
 using CatalogInfrastructure.Services;
 using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,9 @@ builder.Services.AddScoped<IReportService, WordReportService>();
 ////builder.Services.AddScoped<IExportService<Movie>, MovieExportService>();
 //builder.Services.AddScoped<IDataPortServiceFactory<Movie>, MovieDataPortServiceFactory>();
 
+//Auth functionality
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication();
 
 
 // Add services to the container.
@@ -25,6 +29,10 @@ builder.Services.AddDbContext<IdentityContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")
     ));
 
+builder.Services
+    .AddIdentity<AspNetCoreUser, IdentityRole>()
+    .AddEntityFrameworkStores<IdentityContext>()
+    .AddDefaultTokenProviders();
 
 var app = builder.Build();
 

@@ -6,7 +6,7 @@ namespace CatalogDomain.Model;
 
 public partial class WatchedList : Entity
 {
-    [Required(ErrorMessage = "This field can't be empty!")]
+    //[Required(ErrorMessage = "This field can't be empty!")]
     public string UserId { get; set; } = null!;
 
     [Required(ErrorMessage = "This field can't be empty!")]
@@ -20,4 +20,5 @@ public partial class WatchedList : Entity
     public DateTime? WatchedDate { get; set; }
 
     public virtual Movie Movie { get; set; } = null!;
+    public virtual AspNetCoreUser User { get; set; } = null!;
 }
