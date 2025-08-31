@@ -7,7 +7,7 @@
 
 - **Entity Framework Core**  
   Object–Relational Mapper (ORM) to manage database access.  
-  - Code-First approach with migrations.  
+  - Database-First approach with migrations.  
   - Separate contexts for **Catalog** data and **Identity** (user authentication/roles).  
   - Many-to-Many relationships modeled via join entities (e.g., `MovieGenre`, `MovieCast`, `DirectedBy`).  
 
