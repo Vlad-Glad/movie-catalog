@@ -27,13 +27,19 @@ namespace CatalogInfrastructure.Controllers
         // GET: Actors/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(await _context.Actors.ToListAsync());
+            }
+
             if (id == null)
             {
                 return NotFound();
             }
 
             var actor = await _context.Actors
-                .FirstOrDefaultAsync(m => m.Id == id);
+                    .FirstOrDefaultAsync(m => m.Id == id);
+
             if (actor == null)
             {
                 return NotFound();
@@ -67,16 +73,23 @@ namespace CatalogInfrastructure.Controllers
         // GET: Actors/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(await _context.Actors.ToListAsync());
+            }
+
             if (id == null)
             {
                 return NotFound();
             }
 
             var actor = await _context.Actors.FindAsync(id);
+
             if (actor == null)
             {
                 return NotFound();
             }
+
             return View(actor);
         }
 
@@ -118,6 +131,11 @@ namespace CatalogInfrastructure.Controllers
         // GET: Actors/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(await _context.Actors.ToListAsync());
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -125,12 +143,15 @@ namespace CatalogInfrastructure.Controllers
 
             var actor = await _context.Actors
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (actor == null)
             {
                 return NotFound();
             }
 
             return View(actor);
+
+            //here should be some deleting code...
         }
 
         // POST: Actors/Delete/5
@@ -138,7 +159,13 @@ namespace CatalogInfrastructure.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(await _context.Actors.ToListAsync());
+            }
+
             var actor = await _context.Actors.FindAsync(id);
+
             if (actor != null)
             {
                 _context.Actors.Remove(actor);
